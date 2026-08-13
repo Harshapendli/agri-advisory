@@ -2,8 +2,9 @@ fastapi
 uvicorn[standard]
 motor
 beanie
-pydantic
+pydantic[email]
 pydantic-settings
+email-validator
 langchain
 langchain-openai
 langchain-community
