@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment
+.env
+backend/.env
+frontend/.env.local
+
+# Build
+frontend/dist/
+*.egg-info/
+
+# ML models (keep .pkl for deployment, exclude large .pth)
+backend/ml/models/*.pth
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

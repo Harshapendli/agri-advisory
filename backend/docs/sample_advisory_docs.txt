@@ -1,0 +1,28 @@
+INDIAN AGRICULTURAL ADVISORY KNOWLEDGE BASE
+
+KHARIF AND RABI CROP SEASONS
+India has two primary cropping seasons. The Kharif season runs from June to October, coinciding with the southwest monsoon. Major Kharif crops include rice, maize, cotton, sugarcane, soybean, and pulses like pigeon pea and mung bean. These crops require warm temperatures and abundant water. The Rabi season runs from November to April, relying on winter rainfall and irrigation. Major Rabi crops include wheat, barley, mustard, chickpea, and potato. Rabi crops need cool weather during growth and warm weather during harvest.
+
+ICAR RECOMMENDED NPK RATIOS
+The Indian Council of Agricultural Research recommends specific nutrient ratios for major crops. For rice, apply 120 kg nitrogen, 60 kg phosphorus, and 40 kg potassium per hectare. Nitrogen should be split into three applications: basal, tillering, and panicle initiation stages. For wheat, apply 120 kg nitrogen, 60 kg phosphorus, and 40 kg potassium per hectare. For cotton, apply 100 kg nitrogen, 50 kg phosphorus, and 50 kg potassium per hectare. Maize requires 120 to 150 kg nitrogen depending on hybrid variety. Always conduct a soil test before applying fertilizers to avoid over-application.
+
+INTEGRATED PEST MANAGEMENT
+Integrated Pest Management combines biological, cultural, and chemical methods to control pests sustainably. Farmers should first use resistant crop varieties and practice crop rotation to break pest cycles. Biological control uses natural predators like Trichogramma wasps and Trichoderma fungus. Pheromone traps help monitor pest populations. Chemical pesticides should be used only when pest populations exceed the economic threshold level. Rotating pesticide classes prevents resistance development. Neem-based biopesticides are effective and environmentally safe for many pests.
+
+DRIP IRRIGATION AND WATER CONSERVATION
+Drip irrigation delivers water directly to the plant root zone, achieving 90 to 95 percent water use efficiency compared to 40 to 60 percent for flood irrigation. This method reduces water consumption by up to 50 percent while increasing yields by 20 to 40 percent. Drip systems also reduce weed growth and allow precise fertilizer application through fertigation. The Government of India provides subsidies up to 55 percent for small and marginal farmers under the Per Drop More Crop scheme. Drip irrigation is especially valuable for water-scarce regions and high-value crops like vegetables, fruits, and cotton.
+
+PM-KISAN SCHEME
+The Pradhan Mantri Kisan Samman Nidhi provides income support of 6000 rupees per year to all landholding farmer families. The amount is paid in three equal installments of 2000 rupees every four months, directly transferred to bank accounts. All landholding farmers are eligible except institutional landholders and those paying income tax. Farmers must register with valid land records and Aadhaar-linked bank accounts.
+
+SOIL HEALTH CARD SCHEME
+The Soil Health Card Scheme provides farmers with detailed reports on the nutrient status of their soil. Each card contains recommendations on appropriate fertilizer dosage and soil amendments needed to improve fertility. Cards are issued every three years and help farmers apply the correct amount of nutrients, reducing costs and preventing soil degradation. The scheme measures twelve parameters including nitrogen, phosphorus, potassium, pH, electrical conductivity, organic carbon, and micronutrients.
+
+PRADHAN MANTRI FASAL BIMA YOJANA
+The Pradhan Mantri Fasal Bima Yojana is a crop insurance scheme protecting farmers against crop loss due to natural calamities, pests, and diseases. Farmers pay a maximum premium of 2 percent for Kharif crops, 1.5 percent for Rabi crops, and 5 percent for commercial and horticultural crops. The remaining premium is subsidized by the government. Claims are settled based on crop cutting experiments and satellite data. The scheme covers prevented sowing, mid-season adversity, and post-harvest losses.
+
+CROP DISEASE MANAGEMENT
+Early detection of crop diseases is critical for effective management. Fungal diseases like leaf blight, rust, and powdery mildew thrive in humid conditions. Farmers should ensure proper plant spacing for air circulation and avoid overhead irrigation that wets foliage. Copper-based fungicides and Mancozeb are effective against many fungal infections. Bacterial diseases require copper oxychloride sprays and removal of infected plants. Viral diseases spread by insects like aphids and whiteflies can be controlled by managing vector populations with appropriate insecticides.
+
+SUSTAINABLE FARMING PRACTICES
+Crop rotation with legumes improves soil nitrogen naturally and breaks pest cycles. Cover cropping prevents soil erosion and adds organic matter. Mulching conserves soil moisture and suppresses weeds. Vermicomposting and farmyard manure improve soil structure and microbial activity. Zero tillage preserves soil carbon and reduces cultivation costs. Precision agriculture using soil sensors and weather data optimizes input use and maximizes yields while protecting the environment.
