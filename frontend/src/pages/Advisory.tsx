@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MapPin } from 'lucide-react'
+import { MapPin, Navigation } from 'lucide-react'
 import SoilInputForm from '../components/SoilInputForm'
 import VoiceChat from '../components/VoiceChat'
 import { SoilInput } from '../api/client'
@@ -27,10 +27,9 @@ const INDIAN_LOCATIONS = [
 
 export default function Advisory() {
   const [soilContext, setSoilContext] = useState<SoilContext | null>(null)
-  const [location, setLocation] = useState('Hyderabad')
+  const { location, setLocation, detectLocation, locationLoading, language } = useStore()
   const [showDropdown, setShowDropdown] = useState(false)
   const [locSearch, setLocSearch] = useState('')
-  const { language } = useStore()
 
   const handlePredict = (result: any, soil: SoilInput) => {
     setSoilContext({
@@ -62,7 +61,14 @@ export default function Advisory() {
               </button>
               {showDropdown && (
                 <div className="absolute right-0 top-10 bg-white rounded-xl shadow-xl border border-gray-100 w-64 z-50 overflow-hidden">
-                  <div className="p-2 border-b border-gray-100">
+                  <div className="p-2 border-b border-gray-100 space-y-1.5">
+                    <button
+                      onClick={() => { detectLocation(); setShowDropdown(false); }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors font-medium"
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      {locationLoading ? 'Detecting...' : 'Use my current location'}
+                    </button>
                     <input
                       autoFocus
                       value={locSearch}

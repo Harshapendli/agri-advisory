@@ -1,20 +1,28 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { MessageSquare, Bug, History, Sprout, CloudSun, Droplets, Wind, Thermometer } from 'lucide-react'
+import { MessageSquare, Bug, History, Sprout, CloudSun, Droplets, Wind, Thermometer, MapPin, Loader2 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { t } from '../i18n'
 
 export default function Dashboard() {
-  const { user, language } = useStore()
+  const { user, language, location, locationLoading, detectLocation } = useStore()
   const nav = useNavigate()
   const [weather, setWeather] = useState<any>(null)
 
+  // Auto-detect location on first load
   useEffect(() => {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=Hyderabad&appid=ff5b2b3d4aedd9a54c05cbf072d8a5bc&units=metric`)
+    detectLocation()
+  }, [])
+
+  // Fetch weather whenever location changes
+  useEffect(() => {
+    if (!location) return
+    setWeather(null)
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)}&appid=ff5b2b3d4aedd9a54c05cbf072d8a5bc&units=metric`)
       .then(r => r.json())
       .then(data => { if (data.main) setWeather(data) })
       .catch(() => {})
-  }, [])
+  }, [location])
 
   const cards = [
     { icon: <MessageSquare className="w-7 h-7 md:w-8 md:h-8 text-green-600" />, title: t('dash.getAdvisory', language), desc: 'AI-powered crop and farming recommendations', action: () => nav('/advisory'), bg: 'bg-green-50', border: 'border-green-100' },
@@ -41,11 +49,16 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-5 md:mb-6">
-        {weather && (
+        {weather ? (
           <div className="bg-gradient-to-br from-sky-500 to-blue-600 rounded-2xl p-4 md:p-5 text-white">
             <div className="flex items-center gap-2 mb-3">
               <CloudSun className="w-5 h-5" />
-              <h2 className="font-semibold text-sm md:text-base">{t('dash.weather', language)} — Hyderabad</h2>
+              <h2 className="font-semibold text-sm md:text-base">{t('dash.weather', language)} — {location}</h2>
+              {locationLoading && <Loader2 className="w-3 h-3 animate-spin opacity-70" />}
+              <button onClick={detectLocation} className="ml-auto bg-white/20 hover:bg-white/30 rounded-lg px-2 py-1 text-xs flex items-center gap-1 transition-colors" title="Detect my location">
+                <MapPin className="w-3 h-3" />
+                <span className="hidden sm:inline">Sync</span>
+              </button>
             </div>
             <div className="grid grid-cols-2 gap-2 md:gap-3">
               <div className="bg-white/15 rounded-xl p-2.5 md:p-3">
@@ -68,6 +81,13 @@ export default function Dashboard() {
                 <div className="text-base md:text-lg font-bold capitalize">{weather.weather[0].description}</div>
                 <div className="text-[10px] md:text-xs opacity-80">{t('common.conditions', language)}</div>
               </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-gradient-to-br from-sky-500 to-blue-600 rounded-2xl p-4 md:p-5 text-white flex items-center justify-center min-h-[200px]">
+            <div className="text-center">
+              <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 opacity-70" />
+              <p className="text-sm opacity-80">Loading weather for {location}...</p>
             </div>
           </div>
         )}
