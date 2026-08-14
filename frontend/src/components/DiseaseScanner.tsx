@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Upload, Camera, Loader2, AlertTriangle, CheckCircle } from 'lucide-react'
+import { Upload, Camera, Loader2, AlertTriangle, CheckCircle, Leaf } from 'lucide-react'
 import { predictDisease } from '../api/client'
 
 export default function DiseaseScanner() {
@@ -30,8 +30,17 @@ export default function DiseaseScanner() {
     finally { setLoading(false) }
   }
 
-  const severityColor = (confidence: number) =>
-    confidence > 80 ? 'text-red-600 bg-red-50 border-red-200' : confidence > 60 ? 'text-amber-600 bg-amber-50 border-amber-200' : 'text-green-600 bg-green-50 border-green-200'
+  const isHealthy = result?.disease_name?.toLowerCase().includes('healthy')
+  const isNotPlant = result?.disease_name?.toLowerCase().includes('not a plant')
+
+  const severityColor = () => {
+    if (isHealthy) return 'text-green-600 bg-green-50 border-green-200'
+    if (isNotPlant) return 'text-gray-600 bg-gray-50 border-gray-200'
+    const conf = result?.confidence ?? 0
+    return conf > 80 ? 'text-red-600 bg-red-50 border-red-200' : conf > 60 ? 'text-amber-600 bg-amber-50 border-amber-200' : 'text-yellow-600 bg-yellow-50 border-yellow-200'
+  }
+
+  const StatusIcon = isHealthy ? Leaf : isNotPlant ? Upload : AlertTriangle
 
   return (
     <div className="space-y-4">
@@ -53,22 +62,32 @@ export default function DiseaseScanner() {
       {file && (
         <button onClick={analyse} disabled={loading}
           className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white font-medium py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2">
-          {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Analysing...</> : <><Camera className="w-4 h-4" />Analyse Leaf</>}
+          {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Analysing with AI Vision...</> : <><Camera className="w-4 h-4" />Analyse Leaf</>}
         </button>
       )}
       {result && (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className={`p-4 border ${severityColor(result.confidence)}`}>
+          <div className={`p-4 border ${severityColor()}`}>
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5" />
+              <StatusIcon className="w-5 h-5" />
               <div>
                 <p className="font-semibold text-lg">{result.disease_name}</p>
-                <p className="text-sm opacity-80">Confidence: {result.confidence?.toFixed(1)}%{result.is_mock_result ? ' (demo mode)' : ''}</p>
+                <p className="text-sm opacity-80">
+                  {isHealthy ? `Confidence: ${result.confidence?.toFixed(1)}% — No disease detected` :
+                   isNotPlant ? 'Please upload a leaf image' :
+                   `Confidence: ${result.confidence?.toFixed(1)}%`}
+                </p>
               </div>
             </div>
           </div>
           <div className="p-4 space-y-4">
-            {result.symptoms && <div><p className="text-sm font-medium text-gray-700 mb-1">Symptoms</p><p className="text-sm text-gray-600">{result.symptoms}</p></div>}
+            {result.symptoms && <div><p className="text-sm font-medium text-gray-700 mb-1">{isHealthy ? 'Analysis' : 'Symptoms'}</p><p className="text-sm text-gray-600">{result.symptoms}</p></div>}
+            {result.immediate_action && (
+              <div className={`p-3 rounded-xl text-sm ${isHealthy ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'}`}>
+                <p className="font-medium mb-1">{isHealthy ? '✅ Status' : '⚡ Immediate Action'}</p>
+                <p>{result.immediate_action}</p>
+              </div>
+            )}
             {result.treatments?.length > 0 && (
               <div><p className="text-sm font-medium text-gray-700 mb-2">Treatment</p>
                 <div className="space-y-1">{result.treatments.map((t: any, i: number) => (
@@ -77,7 +96,7 @@ export default function DiseaseScanner() {
               </div>
             )}
             {result.prevention_tips?.length > 0 && (
-              <div><p className="text-sm font-medium text-gray-700 mb-2">Prevention Tips</p>
+              <div><p className="text-sm font-medium text-gray-700 mb-2">{isHealthy ? 'Maintenance Tips' : 'Prevention Tips'}</p>
                 <ul className="space-y-1">{result.prevention_tips.map((tip: string, i: number) => <li key={i} className="text-sm text-gray-600 flex gap-2"><span className="text-green-500">•</span>{tip}</li>)}</ul>
               </div>
             )}
