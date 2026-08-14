@@ -58,25 +58,31 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
 async def register(req: RegisterRequest):
     if not req.email and not req.phone:
         raise HTTPException(status_code=400, detail="Email or phone required")
-    if req.email:
-        existing = await User.get_by_email(req.email)
-        if existing:
-            raise HTTPException(status_code=400, detail="Email already registered")
-    if req.phone:
-        existing = await User.get_by_phone(req.phone)
-        if existing:
-            raise HTTPException(status_code=400, detail="Phone already registered")
-    user = User(
-        name=req.name,
-        email=req.email,
-        phone=req.phone,
-        hashed_password=User.hash_password(req.password),
-        state=req.state,
-        preferred_language=req.preferred_language,
-    )
-    await user.insert()
-    token = create_access_token({"sub": str(user.id)})
-    return TokenResponse(access_token=token, user_id=str(user.id), name=user.name, preferred_language=user.preferred_language)
+    try:
+        if req.email:
+            existing = await User.get_by_email(req.email)
+            if existing:
+                raise HTTPException(status_code=400, detail="Email already registered")
+        if req.phone:
+            existing = await User.get_by_phone(req.phone)
+            if existing:
+                raise HTTPException(status_code=400, detail="Phone already registered")
+        user = User(
+            name=req.name,
+            email=req.email,
+            phone=req.phone,
+            hashed_password=User.hash_password(req.password),
+            state=req.state,
+            preferred_language=req.preferred_language,
+        )
+        await user.insert()
+        token = create_access_token({"sub": str(user.id)})
+        return TokenResponse(access_token=token, user_id=str(user.id), name=user.name, preferred_language=user.preferred_language)
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Registration error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/login", response_model=TokenResponse)
 async def login(req: LoginRequest):

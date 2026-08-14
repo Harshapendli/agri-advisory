@@ -2,9 +2,20 @@ from beanie import Document, Indexed
 from pydantic import EmailStr, Field
 from typing import Optional
 from datetime import datetime
-from passlib.context import CryptContext
+import bcrypt as _bcrypt
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+class _BcryptContext:
+    """Simple bcrypt wrapper that works with bcrypt 4.x and 5.x."""
+    def hash(self, password: str) -> str:
+        return _bcrypt.hashpw(password.encode('utf-8'), _bcrypt.gensalt()).decode('utf-8')
+
+    def verify(self, password: str, hashed: str) -> bool:
+        try:
+            return _bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+        except Exception:
+            return False
+
+pwd_context = _BcryptContext()
 
 class User(Document):
     email: Optional[Indexed(EmailStr, unique=True)] = None
