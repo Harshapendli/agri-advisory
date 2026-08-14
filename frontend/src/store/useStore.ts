@@ -20,7 +20,7 @@ interface Store {
 const savedUser = localStorage.getItem('agri_user')
 const parsedUser = savedUser ? JSON.parse(savedUser) : null
 
-export const useStore = create<Store>((set) => ({
+export const useStore = create<Store>((set, get) => ({
   user: parsedUser,
   token: localStorage.getItem('agri_token'),
   language: (localStorage.getItem('agri_lang') as any) || 'en',
@@ -45,31 +45,40 @@ export const useStore = create<Store>((set) => ({
     set({ location })
   },
   detectLocation: () => {
-    if (!navigator.geolocation) return
     set({ locationLoading: true })
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        try {
-          const { latitude, longitude } = pos.coords
-          // Reverse geocode using OpenWeatherMap (free, no extra API key needed)
-          const res = await fetch(
-            `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=ff5b2b3d4aedd9a54c05cbf072d8a5bc`
-          )
-          const data = await res.json()
-          if (data?.[0]?.name) {
-            const city = data[0].name
-            localStorage.setItem('agri_location', city)
-            set({ location: city, locationLoading: false })
-          } else {
-            set({ locationLoading: false })
-          }
-        } catch {
-          set({ locationLoading: false })
+
+    const saveCity = (city: string) => {
+      localStorage.setItem('agri_location', city)
+      set({ location: city, locationLoading: false })
+    }
+
+    // Strategy: Race IP-based (fast ~200ms) vs GPS (slow ~3-8s)
+    // IP location fires first, GPS refines if available
+    let resolved = false
+
+    // 1. Fast: IP-based geolocation (no permission needed, instant)
+    fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) })
+      .then(r => r.json())
+      .then(data => {
+        if (!resolved && data?.city) {
+          resolved = true
+          saveCity(data.city)
+          // Still try GPS in background for more accuracy
+          tryGPS(saveCity)
         }
-      },
-      () => { set({ locationLoading: false }) },
-      { timeout: 10000 }
-    )
+      })
+      .catch(() => {
+        // IP failed, rely on GPS
+        if (!resolved) tryGPS((city) => { resolved = true; saveCity(city) })
+      })
+
+    // 2. Fallback timeout — if nothing resolves in 4s, stop loading
+    setTimeout(() => {
+      if (!resolved) {
+        resolved = true
+        set({ locationLoading: false })
+      }
+    }, 4000)
   },
   logout: () => {
     localStorage.removeItem('agri_token')
@@ -79,3 +88,22 @@ export const useStore = create<Store>((set) => ({
     set({ user: null, token: null, language: 'en', location: 'Hyderabad' })
   }
 }))
+
+// GPS reverse geocode helper (runs silently in background)
+function tryGPS(onCity: (city: string) => void) {
+  if (!navigator.geolocation) return
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      try {
+        const { latitude, longitude } = pos.coords
+        const res = await fetch(
+          `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=ff5b2b3d4aedd9a54c05cbf072d8a5bc`
+        )
+        const data = await res.json()
+        if (data?.[0]?.name) onCity(data[0].name)
+      } catch {}
+    },
+    () => {},
+    { timeout: 5000, maximumAge: 300000 } // cache GPS for 5 min
+  )
+}
